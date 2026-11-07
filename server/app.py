@@ -33,7 +33,22 @@ def allowed(ip):
     return True
 
 
+def send_via_relay(name, email, message, ip):
+    """Если api.telegram.org недоступен с сервера, шлём через Cloudflare Worker."""
+    data = json.dumps({'name': name, 'email': email, 'message': message, 'ip': ip}).encode()
+    req = urllib.request.Request(
+        os.environ['RELAY_URL'], data=data,
+        headers={'Content-Type': 'application/json',
+                 'X-Relay-Secret': os.environ.get('RELAY_SECRET', ''),
+                 'User-Agent': 'noctra-api'})
+    with urllib.request.urlopen(req, timeout=10) as r:
+        if r.status != 200:
+            raise RuntimeError(f'relay status {r.status}')
+
+
 def send_telegram(name, email, message, ip):
+    if os.environ.get('RELAY_URL'):
+        return send_via_relay(name, email, message, ip)
     token = os.environ.get('TELEGRAM_BOT_TOKEN', '')
     chat = os.environ.get('TELEGRAM_CHAT_ID', '')
     if not token or not chat:
