@@ -30,4 +30,4 @@ jobs:
             "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/zerion/"
 
       - name: Smoke test
-        run: curl -fsS "http://${{ secrets.DEPLOY_HOST }}/" | grep -q "ZERION"
+        run: curl -fsS "http://${{ secrets.DEPLOY_HOST }}/" | grep -q "NOCTRA"
