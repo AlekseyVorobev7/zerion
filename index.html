@@ -346,8 +346,9 @@ footer{border-top:1px solid var(--line);padding:40px 0;background:var(--bg)}
     <div class="f"><label class="mono" for="n">Имя</label><input id="n" required><small>Укажите имя</small></div>
     <div class="f"><label class="mono" for="e">Email</label><input id="e" type="email" required><small>Укажите корректный email</small></div>
     <div class="f"><label class="mono" for="m">Описание задачи</label><textarea id="m" required></textarea><small>Опишите задачу</small></div>
-    <button class="btn fill" type="submit">Отправить запрос</button>
-    <div id="ok">&gt; request received. Мы свяжемся с вами.</div>
+    <input id="site" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0">
+    <button class="btn fill" type="submit" id="send">Отправить запрос</button>
+    <div id="ok" role="status"></div>
    </form>
    <!-- TODO: заменить контакты на реальные -->
    <div class="links">
@@ -557,8 +558,18 @@ $('#form').addEventListener('submit',e=>{e.preventDefault();let ok=true;
  [['n',v=>v.trim()],['e',v=>/^\S+@\S+\.\S+$/.test(v)],['m',v=>v.trim()]].forEach(([id,f])=>{
   const el=document.getElementById(id),g=el.closest('.f');const good=f(el.value);g.classList.toggle('bad',!good);if(!good)ok=false});
  if(!ok)return;
- // TODO: отправить данные на backend-эндпоинт. Сейчас ничего не отправляется.
- $('#ok').style.display='block';e.target.reset()});
+ const box=$('#ok'),btn=$('#send'),form=e.target;
+ const show=(t,bad)=>{box.textContent=t;box.style.display='block';box.style.color=bad?'#ff6b6b':'var(--acid)';box.style.borderColor=bad?'#ff6b6b':'var(--acid)'};
+ btn.disabled=true;show('> sending…');
+ fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+  name:$('#n').value,email:$('#e').value,message:$('#m').value,website:$('#site').value})})
+ .then(r=>r.json().then(j=>({r,j})))
+ .then(({r,j})=>{
+  if(r.ok&&j.ok){show('> request received. Мы свяжемся с вами.');form.reset()}
+  else if(r.status===429)show('> слишком много заявок с вашего адреса. Попробуйте позже или напишите в Telegram.',true);
+  else show('> не удалось отправить заявку. Напишите нам в Telegram или на email ниже.',true)})
+ .catch(()=>show('> нет связи с сервером. Напишите нам в Telegram или на email ниже.',true))
+ .finally(()=>{btn.disabled=false})});
 })();
 </script>
 </body>

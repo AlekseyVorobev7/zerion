@@ -4,9 +4,12 @@
 set -euo pipefail
 
 apt-get update -y
-apt-get install -y nginx rsync
+apt-get install -y nginx rsync python3 curl
 
-mkdir -p /var/www/zerion
+mkdir -p /var/www/zerion /opt/noctra
+cp "$(dirname "$0")/noctra-api.service" /etc/systemd/system/noctra-api.service
+cp "$(dirname "$0")/tg-setup.sh" /opt/noctra/tg-setup.sh
+systemctl daemon-reload
 cp "$(dirname "$0")/nginx.conf" /etc/nginx/sites-available/zerion
 ln -sf /etc/nginx/sites-available/zerion /etc/nginx/sites-enabled/zerion
 rm -f /etc/nginx/sites-enabled/default

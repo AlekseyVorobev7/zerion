@@ -29,5 +29,12 @@ jobs:
             index.html favicon.svg favicon.ico apple-touch-icon.png icon-192.png media \
             "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/zerion/"
 
+      - name: Sync API and nginx config
+        run: |
+          SSH="ssh -i ~/.ssh/id_deploy ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}"
+          scp -i ~/.ssh/id_deploy server/app.py "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/opt/noctra/app.py"
+          scp -i ~/.ssh/id_deploy deploy/nginx.conf "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/etc/nginx/sites-available/zerion"
+          $SSH 'nginx -t && systemctl reload nginx && systemctl restart noctra-api'
+
       - name: Smoke test
         run: curl -fsS "http://${{ secrets.DEPLOY_HOST }}/" | grep -q "NOCTRA"
