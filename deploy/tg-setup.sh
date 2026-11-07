@@ -6,7 +6,8 @@
 # 3. Запустите скрипт: он спросит токен (ввод скрыт), сам найдёт chat_id и отправит тестовое сообщение.
 set -euo pipefail
 
-read -rsp "Токен бота: " TOKEN; echo
+TOKEN=${TG_TOKEN:-}
+if [ -z "$TOKEN" ]; then read -rsp "Токен бота: " TOKEN; echo; fi
 [ -n "$TOKEN" ] || { echo "Токен пустой"; exit 1; }
 
 UPDATES=$(curl -fsS "https://api.telegram.org/bot${TOKEN}/getUpdates") || { echo "Telegram отклонил токен"; exit 1; }
