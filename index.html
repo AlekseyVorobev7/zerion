@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZERION — Digital Systems</title>
+<meta name="description" content="ZERION — независимая технологическая студия. Разработка ПО, автоматизация, инфраструктура и AI-решения для бизнеса.">
+<meta name="theme-color" content="#080A0B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080A0B;--graphite:#15191B;--acid:#C5FF00;--grey:#A0A6A8;--line:rgba(255,255,255,.08);
+--sans:'Space Grotesk',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:#2a3033 var(--bg)}
+body{background:var(--bg);color:#e8ecec;font-family:var(--sans);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::selection{background:var(--acid);color:#000}
+::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:#2a3033}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--acid);outline-offset:3px}
+#bg{position:fixed;inset:0;z-index:0;width:100%;height:100%}
+body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;
+background:repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 3px);mix-blend-mode:overlay}
+main,footer,header{position:relative;z-index:2}
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey)}
+.acid{color:var(--acid)}
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+section{padding:120px 0;border-top:1px solid var(--line);position:relative}
+.label{display:flex;gap:12px;align-items:center;margin-bottom:28px}
+.label::before{content:"";width:28px;height:1px;background:var(--acid)}
+h2{font-size:clamp(32px,5.5vw,68px);line-height:1.04;letter-spacing:-.025em;font-weight:500;max-width:15em}
+.lead{color:var(--grey);font-size:clamp(16px,1.6vw,20px);max-width:44em;margin-top:24px}
+/* nav */
+header{position:fixed;top:0;left:0;right:0;z-index:50;background:linear-gradient(var(--bg),rgba(8,10,11,.6));backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:64px;gap:20px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.22em;font-size:15px}
+.logo svg{width:20px;height:20px}
+nav ul{display:flex;gap:22px;list-style:none}
+nav a{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey);transition:color .2s}
+nav a:hover,nav a.active{color:var(--acid)}
+.pill{display:flex;align-items:center;gap:8px;border:1px solid var(--line);padding:6px 12px;border-radius:99px;white-space:nowrap}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--acid);box-shadow:0 0 10px var(--acid);animation:pulse 2s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.burger{display:none;background:none;border:1px solid var(--line);width:40px;height:40px;color:#fff;cursor:pointer}
+.burger span{display:block;width:18px;height:1px;background:#fff;margin:5px auto}
+nav a{white-space:nowrap}
+@media(max-width:1180px){nav,.pill{display:none}.burger{display:block}
+ nav.open{display:block;position:absolute;top:100%;left:0;right:0;height:calc(100vh - 64px);background:var(--bg);padding:32px 24px;overflow:auto}
+ nav.open ul{flex-direction:column;gap:22px}nav.open a{font-size:18px}}
+/* hero */
+#hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding-top:140px;border-top:0}
+.title{font-size:clamp(64px,16vw,220px);font-weight:700;letter-spacing:-.04em;line-height:.9;position:relative;display:inline-block;margin:18px 0 8px}
+.title::before,.title::after{content:attr(data-text);position:absolute;inset:0;opacity:0;pointer-events:none}
+.title::before{color:var(--acid);clip-path:inset(0 0 55% 0)}
+.title::after{color:#fff;mix-blend-mode:difference;clip-path:inset(55% 0 0 0)}
+.title.glitch::before{animation:g1 .4s steps(2) 2}.title.glitch::after{animation:g2 .4s steps(2) 2}
+.title:hover::before{animation:g1 .4s steps(2) infinite}.title:hover::after{animation:g2 .4s steps(2) infinite}
+@keyframes g1{0%{opacity:.9;transform:translate(-5px,2px)}50%{opacity:.9;transform:translate(6px,-2px)}100%{opacity:0}}
+@keyframes g2{0%{opacity:.8;transform:translate(5px,-3px)}50%{opacity:.8;transform:translate(-6px,3px)}100%{opacity:0}}
+.sub{font-size:clamp(14px,2vw,22px);letter-spacing:.5em;color:var(--acid);font-family:var(--mono)}
+.hero-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:48px;margin-top:56px;align-items:end}
+.hero-grid h2{font-size:clamp(26px,3.6vw,46px);max-width:18em}
+.status{border:1px solid var(--line);background:rgba(21,25,27,.7);padding:20px;position:relative}
+.status b{display:block;font-family:var(--mono);color:var(--acid);font-size:22px;margin:6px 0;font-weight:500}
+.btns{display:flex;gap:14px;flex-wrap:wrap;margin-top:36px}
+.btn{font-family:var(--mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;padding:16px 26px;border:1px solid var(--acid);color:var(--acid);background:transparent;cursor:pointer;transition:.25s;display:inline-block}
+.btn.fill{background:var(--acid);color:#000;font-weight:500}
+.btn:hover{box-shadow:0 0 28px rgba(197,255,0,.35);transform:translateY(-2px)}
+.btn.ghost{border-color:var(--line);color:#fff}.btn.ghost:hover{border-color:var(--acid)}
+.clock{position:absolute;right:24px;bottom:28px}
+@media(max-width:860px){.hero-grid{grid-template-columns:1fr}.clock{display:none}}
+/* corners */
+.card{position:relative;background:rgba(21,25,27,.65);border:1px solid var(--line);padding:32px;overflow:hidden;transition:border-color .3s}
+.card::before{content:"";position:absolute;inset:0;background:radial-gradient(320px circle at var(--mx,50%) var(--my,50%),rgba(197,255,0,.10),transparent 60%);opacity:0;transition:opacity .3s;pointer-events:none}
+.card:hover{border-color:rgba(197,255,0,.5)}.card:hover::before{opacity:1}
+.card::after{content:"";position:absolute;top:8px;right:8px;width:12px;height:12px;border-top:1px solid var(--acid);border-right:1px solid var(--acid)}
+.grid{display:grid;gap:16px;margin-top:56px}
+.g4{grid-template-columns:repeat(4,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:1020px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.g4,.g2,.g3{grid-template-columns:1fr}}
+.card h3{font-size:22px;font-weight:500;margin:14px 0 10px}
+.card p{color:var(--grey);font-size:15px}
+.card ul{list-style:none;margin-top:16px;font-family:var(--mono);font-size:12px;color:var(--grey);max-height:0;opacity:0;overflow:hidden;transition:.4s}
+.card:hover ul,.card:focus-within ul{max-height:120px;opacity:1}
+.card li::before{content:"› ";color:var(--acid)}
+@media(hover:none){.card ul{max-height:120px;opacity:1}}
+/* approach */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:56px;border-top:1px solid var(--line)}
+.step{padding:28px 24px 0 0}.step h4{font-weight:500;font-size:20px;margin:8px 0}.step p{color:var(--grey);font-size:14px}
+@media(max-width:860px){.steps{grid-template-columns:1fr 1fr;gap:24px}}
+@media(max-width:520px){.steps{grid-template-columns:1fr}}
+/* terminal */
+.term{margin-top:56px;background:#0d1011;border:1px solid var(--line);font-family:var(--mono);font-size:13px}
+.term-bar{display:flex;gap:7px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line)}
+.term-bar i{width:9px;height:9px;border-radius:50%;background:#2a3033}.term-bar span{margin-left:10px}
+#out{height:300px;overflow-y:auto;padding:16px;white-space:pre-wrap;color:#cfd6d6;line-height:1.7}
+#out .cmd{color:var(--acid)}#out .err{color:#ff6b6b}
+.term-in{display:flex;gap:10px;padding:12px 16px;border-top:1px solid var(--line);align-items:center}
+.term-in label{color:var(--acid);white-space:nowrap}
+.term-in input{flex:1;min-width:0;background:none;border:0;color:#fff;font:inherit;outline:0}
+.chips{display:flex;gap:8px;flex-wrap:wrap;padding:0 16px 16px}
+.chip{background:none;border:1px solid var(--line);color:var(--grey);font:inherit;padding:5px 10px;cursor:pointer;font-size:12px}
+.chip:hover{border-color:var(--acid);color:var(--acid)}
+/* projects */
+.proj{min-height:300px;display:flex;flex-direction:column}
+.proj dl{margin-top:12px}.proj dt{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--acid);text-transform:uppercase;margin-top:12px}
+.proj dd{color:var(--grey);font-size:14px}
+.stack{position:absolute;left:0;right:0;bottom:0;background:var(--graphite);border-top:1px solid var(--acid);padding:18px 32px;transform:translateY(101%);transition:transform .4s;display:flex;gap:8px;flex-wrap:wrap;z-index:2}
+.stack span{font-family:var(--mono);font-size:12px;border:1px solid var(--line);padding:3px 9px;color:var(--acid)}
+.proj:hover .stack,.proj.open .stack{transform:none}
+.note{margin-top:24px}
+/* lab */
+.rows{margin-top:56px;border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:110px 1.1fr 2fr 140px;gap:20px;padding:22px 12px;border-bottom:1px solid var(--line);align-items:center;transition:.25s}
+.row:hover{background:rgba(197,255,0,.05);padding-left:24px}
+.row b{font-weight:500;font-size:18px}.row p{color:var(--grey);font-size:14px}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.1em;border:1px solid var(--line);padding:4px 10px;text-align:center;justify-self:start}
+.tag.on{color:var(--acid);border-color:var(--acid)}
+@media(max-width:860px){.row{grid-template-columns:1fr;gap:6px}}
+/* form */
+.contact{display:grid;grid-template-columns:1.3fr 1fr;gap:48px;margin-top:56px}
+@media(max-width:860px){.contact{grid-template-columns:1fr}}
+form{display:grid;gap:18px}
+.f label{display:block;margin-bottom:6px}
+.f input,.f textarea{width:100%;background:rgba(21,25,27,.7);border:1px solid var(--line);color:#fff;padding:14px;font:inherit;border-radius:0}
+.f textarea{min-height:140px;resize:vertical}
+.f input:focus,.f textarea:focus{outline:0;border-color:var(--acid)}
+.f.bad input,.f.bad textarea{border-color:#ff6b6b}.f small{display:none;color:#ff6b6b;font-family:var(--mono);font-size:11px}.f.bad small{display:block}
+#ok{display:none;font-family:var(--mono);color:var(--acid);border:1px solid var(--acid);padding:16px}
+.links a{display:block;font-size:22px;padding:14px 0;border-bottom:1px solid var(--line);transition:.2s}
+.links a:hover{color:var(--acid);padding-left:10px}
+footer{border-top:1px solid var(--line);padding:40px 0;background:var(--bg)}
+.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+/* reveal */
+.rv{opacity:0;transform:translateY(28px);filter:blur(6px);transition:opacity .9s,transform .9s,filter .9s}
+.rv.in{opacity:1;transform:none;filter:none}
+/* marquee */
+.marquee{overflow:hidden;border-block:1px solid var(--line);padding:16px 0;background:rgba(21,25,27,.5);position:relative;z-index:2}
+.mq{display:flex;gap:48px;width:max-content;animation:mq 40s linear infinite;font-family:var(--mono);font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--grey)}
+.mq span::after{content:"//";margin-left:48px;color:var(--acid)}
+@keyframes mq{to{transform:translateX(-50%)}}
+/* story */
+.story{padding:0}
+.track{height:520vh}
+.stage{position:sticky;top:0;height:100vh;display:flex;align-items:center;overflow:hidden}
+.stage-in{display:grid;grid-template-columns:1fr 1.15fr;gap:48px;align-items:center;width:100%}
+.chaps{position:relative;height:340px;margin-top:8px}
+.chap{position:absolute;inset:0;opacity:0;transform:translateY(24px);filter:blur(6px);transition:.6s;pointer-events:none}
+.chap.on{opacity:1;transform:none;filter:none}
+.chap h2{font-size:clamp(28px,4vw,54px);margin:14px 0 18px}
+.chap p{color:var(--grey);font-size:clamp(15px,1.5vw,18px);max-width:30em}
+.prog{display:flex;gap:8px;margin-top:20px}
+.prog i{height:2px;flex:1;background:var(--line);position:relative}
+.prog i b{position:absolute;inset:0;background:var(--acid);transform:scaleX(0);transform-origin:left}
+.viz{position:relative;aspect-ratio:1/.85;border:1px solid var(--line);background:rgba(13,16,17,.8)}
+.viz canvas{width:100%;height:100%;display:block}
+.hud{position:absolute;left:14px;right:14px;top:12px;display:flex;justify-content:space-between;font-size:11px}
+@media(max-width:860px){.stage-in{grid-template-columns:1fr;gap:20px}.chaps{height:280px}.viz{aspect-ratio:auto;height:40vh;order:-1}.chap h2{font-size:28px;margin:10px 0 12px}}
+/* reels (video inserts) */
+.reelsec{padding:0 0 120px;border-top:0}
+.reel{position:relative;border:1px solid var(--line);background:#050607;overflow:hidden;aspect-ratio:21/9;min-height:240px}
+.reel canvas,.reel video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.reel::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(90deg,rgba(5,6,7,.8),transparent 65%),radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.7)),repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 1px,transparent 1px 3px)}
+.reel-hud{position:absolute;z-index:3;left:16px;right:16px;top:14px;display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:#fff;text-transform:uppercase}
+.rec{display:flex;align-items:center;gap:7px}.rec i{width:8px;height:8px;border-radius:50%;background:#ff3b3b;animation:pulse 1.2s infinite}
+.reel-cap{position:absolute;z-index:3;left:24px;bottom:22px;right:24px;font-size:clamp(22px,4vw,56px);font-weight:500;letter-spacing:-.02em;line-height:1.05;max-width:14em}
+.reel-cap em{font-style:normal;color:var(--acid)}
+.reel.sm{aspect-ratio:21/8;margin-top:48px}
+@media(max-width:640px){.reel{aspect-ratio:4/3}.reel.sm{aspect-ratio:4/3}.reel-hud .cam{display:none}}
+/* boot */
+#boot{position:fixed;inset:0;background:#000;z-index:200;display:flex;align-items:center;padding:24px;font-family:var(--mono);font-size:14px;color:var(--acid);cursor:pointer;transition:opacity .6s}
+#boot.off{opacity:0;pointer-events:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.rv{opacity:1;transform:none;filter:none}#boot{display:none}}
+</style>
+</head>
+<body>
+<div id="boot" aria-hidden="true"><pre id="bootTxt"></pre></div>
+<canvas id="bg" aria-hidden="true"></canvas>
+
+<header>
+ <div class="wrap nav">
+  <a href="#hero" class="logo" aria-label="ZERION">
+   <svg viewBox="0 0 20 20" fill="none" stroke="#C5FF00" stroke-width="2.4" stroke-linecap="square"><path d="M3 3H17M17 3L3 17M3 17H17"/></svg>ZERION
+  </a>
+  <nav id="nav" aria-label="Основная навигация"><ul>
+   <li><a href="#hero">01 Главная</a></li><li><a href="#directions">02 Направления</a></li>
+   <li><a href="#projects">03 Проекты</a></li><li><a href="#lab">04 Лаборатория</a></li>
+   <li><a href="#about">05 О компании</a></li><li><a href="#contact">06 Контакт</a></li>
+  </ul></nav>
+  <div class="pill mono"><span class="dot"></span>System status: <span class="acid">Operational</span></div>
+  <button class="burger" id="burger" aria-label="Меню"><span></span><span></span></button>
+ </div>
+</header>
+
+<main>
+<section id="hero">
+ <div class="wrap">
+  <p class="mono">01 / Главная &nbsp;·&nbsp; Independent technology studio / 2026</p>
+  <h1 class="title" data-text="ZERION">ZERION</h1>
+  <p class="sub">DIGITAL SYSTEMS</p>
+  <div class="hero-grid">
+   <div>
+    <h2>Мы создаём системы, которые работают за пределами очевидного.</h2>
+    <p class="lead">Разработка цифровых продуктов, программных решений и технологической инфраструктуры для бизнеса.</p>
+    <div class="btns"><a class="btn fill" href="#directions">Исследовать возможности</a><a class="btn ghost" href="#contact">Связаться</a></div>
+   </div>
+   <div class="status">
+    <span class="mono">System status</span><b>OPERATIONAL</b>
+    <span class="mono">Infrastructure // Development // Automation</span>
+   </div>
+  </div>
+ </div>
+ <div class="clock mono" id="clock"></div>
+</section>
+
+<div class="marquee" aria-hidden="true"><div class="mq">
+ <span>Software</span><span>Infrastructure</span><span>Automation</span><span>AI Solutions</span><span>Web platforms</span><span>Integrations</span>
+ <span>Software</span><span>Infrastructure</span><span>Automation</span><span>AI Solutions</span><span>Web platforms</span><span>Integrations</span>
+</div></div>
+
+<section id="intro">
+ <div class="wrap rv">
+  <p class="label mono">Манифест</p>
+  <h2>Технологии не должны ограничиваться возможным.</h2>
+  <p class="lead">Мы проектируем и создаём цифровые решения, которые помогают бизнесу развиваться, оптимизировать процессы и выходить за пределы привычных инструментов.</p>
+ </div>
+</section>
+
+<section id="story" class="story" aria-label="Наш подход: от идеи до работающей системы">
+ <div class="track">
+  <div class="stage">
+   <div class="wrap stage-in">
+    <div>
+     <p class="label mono">Our approach / От идеи до работающей системы</p>
+     <div class="chaps">
+      <article class="chap on"><span class="mono acid">CH.01 / Сигнал</span><h2>Всё начинается с задачи.</h2><p>Бизнес приходит с хаосом: разрозненные данные, ручные процессы, идеи без структуры. Мы слушаем и фиксируем, что именно должно измениться.</p></article>
+      <article class="chap"><span class="mono acid">CH.02 / Анализ</span><h2>Хаос превращается в карту.</h2><p>Разбираем процессы, источники данных и ограничения. Находим, что стоит автоматизировать, а что лучше оставить как есть.</p></article>
+      <article class="chap"><span class="mono acid">CH.03 / Архитектура</span><h2>Система проектируется до кода.</h2><p>Определяем модули и связи: интерфейсы, API, хранилище, очереди, AI-слой, инфраструктуру. Так система не разваливается при росте.</p></article>
+      <article class="chap"><span class="mono acid">CH.04 / Запуск</span><h2>Работающая система, а не презентация.</h2><p>Выводим в продакшен, настраиваем мониторинг и остаёмся на связи: поддержка и развитие продолжаются после релиза.</p></article>
+     </div>
+     <div class="prog" aria-hidden="true"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
+    </div>
+    <div class="viz"><canvas id="sc" aria-hidden="true"></canvas><div class="hud mono"><span id="scLab">INPUT // RAW SIGNAL</span><span>SCROLL ↓</span></div></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="reelsec" id="reel"><div class="wrap">
+ <div class="reel" data-mode="rain" data-video="media/stream.mp4">
+  <canvas aria-hidden="true"></canvas>
+  <div class="reel-hud"><span class="rec"><i></i>REC</span><span class="cam">CAM 01 // DATA STREAM</span><span class="tc">00:00:00:00</span></div>
+  <div class="reel-cap">Данные. Сервисы. Процессы. <em>Одна система.</em></div>
+ </div>
+</div></section>
+
+<section id="terminal">
+ <div class="wrap rv">
+  <p class="label mono">Интерактивный терминал</p>
+  <h2>Спросите систему</h2>
+  <div class="term" role="region" aria-label="Интерактивный терминал">
+   <div class="term-bar"><i></i><i></i><i></i><span class="mono">zerion // terminal</span></div>
+   <div id="out" aria-live="polite"></div>
+   <div class="term-in"><label for="cin">zerion@lab:~$</label><input id="cin" autocomplete="off" spellcheck="false" placeholder="введите help"></div>
+   <div class="chips" id="chips"></div>
+  </div>
+ </div>
+</section>
+
+<section id="directions">
+ <div class="wrap rv">
+  <p class="label mono">02 / Направления</p>
+  <h2>Что мы делаем</h2>
+  <p class="lead">Разработка ПО, автоматизация процессов, веб-платформы, AI-интеграции и инфраструктурные решения.</p>
+  <div class="grid g4">
+   <article class="card"><span class="mono acid">D—01</span><h3>Software Engineering</h3><p>Разработка программных продуктов и сервисов, веб-платформ.</p><ul><li>Backend и API</li><li>Веб-платформы</li><li>Мобильные клиенты</li></ul></article>
+   <article class="card"><span class="mono acid">D—02</span><h3>Digital Infrastructure</h3><p>Инфраструктура, серверные системы, интеграции.</p><ul><li>Серверы и деплой</li><li>CI/CD</li><li>Интеграции систем</li></ul></article>
+   <article class="card"><span class="mono acid">D—03</span><h3>Process Automation</h3><p>Автоматизация бизнес-процессов.</p><ul><li>Сбор и обработка данных</li><li>Боты и сервисы</li><li>Документооборот</li></ul></article>
+   <article class="card"><span class="mono acid">D—04</span><h3>AI Solutions</h3><p>Интеллектуальные инструменты и интеграции.</p><ul><li>LLM-ассистенты</li><li>Классификация и поиск</li><li>Интеграция в продукты</li></ul></article>
+  </div>
+ </div>
+</section>
+
+<section id="projects">
+ <div class="wrap rv">
+  <p class="label mono">03 / Проекты</p>
+  <h2>Задачи и решения</h2>
+  <div class="grid g2">
+   <article class="card proj" tabindex="0"><span class="mono acid">P—01</span><h3>Платформа заявок</h3><dl><dt>Задача</dt><dd>Свести разрозненные заявки в одну систему с ролями и статусами.</dd><dt>Решение</dt><dd>Веб-платформа с личными кабинетами, API и уведомлениями.</dd></dl><div class="stack"><span>Kotlin</span><span>Spring Boot</span><span>PostgreSQL</span><span>Next.js</span></div></article>
+   <article class="card proj" tabindex="0"><span class="mono acid">P—02</span><h3>Сервис сбора данных</h3><dl><dt>Задача</dt><dd>Регулярно получать данные из внешних источников разных форматов.</dd><dt>Решение</dt><dd>Набор парсеров с единой моделью данных и мониторингом.</dd></dl><div class="stack"><span>Java</span><span>Python</span><span>Docker</span><span>Redis</span></div></article>
+   <article class="card proj" tabindex="0"><span class="mono acid">P—03</span><h3>Автоматизация документооборота</h3><dl><dt>Задача</dt><dd>Убрать ручное заполнение и пересылку документов.</dd><dt>Решение</dt><dd>Генерация документов по шаблонам и интеграция с рабочими системами.</dd></dl><div class="stack"><span>Python</span><span>REST</span><span>PostgreSQL</span></div></article>
+   <article class="card proj" tabindex="0"><span class="mono acid">P—04</span><h3>AI-ассистент поддержки</h3><dl><dt>Задача</dt><dd>Разгрузить поддержку типовыми вопросами.</dd><dt>Решение</dt><dd>Ассистент на базе LLM с поиском по базе знаний.</dd></dl><div class="stack"><span>LLM API</span><span>Vector search</span><span>TypeScript</span></div></article>
+  </div>
+  <p class="mono note">Подробности по проектам — по запросу.</p>
+ </div>
+</section>
+
+<section id="lab">
+ <div class="wrap rv">
+  <p class="label mono">04 / Лаборатория</p>
+  <h2>Эксперименты и внутренние инструменты</h2>
+  <p class="lead">Собственные разработки, технологические исследования и инструменты, которые мы используем в работе.</p>
+  <div class="reel sm" data-mode="wire" data-video="media/lab.mp4">
+   <canvas aria-hidden="true"></canvas>
+   <div class="reel-hud"><span class="rec"><i></i>REC</span><span class="cam">CAM 02 // ARCHITECTURE MODEL</span><span class="tc">00:00:00:00</span></div>
+   <div class="reel-cap">Сначала модель. <em>Потом код.</em></div>
+  </div>
+  <div class="rows">
+   <div class="row"><span class="mono">LAB-001</span><b>Parser toolkit</b><p>Внутренний набор для быстрой сборки парсеров данных.</p><span class="tag on">ACTIVE</span></div>
+   <div class="row"><span class="mono">LAB-002</span><b>Deploy pipeline</b><p>Автоматизированный выпуск сервисов на собственные серверы.</p><span class="tag on">ACTIVE</span></div>
+   <div class="row"><span class="mono">LAB-003</span><b>Agent sandbox</b><p>Эксперименты с AI-агентами для рутинных задач.</p><span class="tag">IN PROGRESS</span></div>
+   <div class="row"><span class="mono">LAB-004</span><b>Semantic search</b><p>Исследование поиска по смыслу в корпоративных базах знаний.</p><span class="tag">RESEARCH</span></div>
+  </div>
+ </div>
+</section>
+
+<section id="about">
+ <div class="wrap rv">
+  <p class="label mono">05 / О компании</p>
+  <h2>Философия и принципы</h2>
+  <p class="lead">ZERION — небольшая команда инженеров. Мы берём задачи, в которых важны архитектура, надёжность и понятный результат.</p>
+  <div class="reel sm" data-mode="scope" data-video="media/monitor.mp4">
+   <canvas aria-hidden="true"></canvas>
+   <div class="reel-hud"><span class="rec"><i></i>REC</span><span class="cam">CAM 03 // MONITORING</span><span class="tc">00:00:00:00</span></div>
+   <div class="reel-cap">Следим за тем, что <em>запускаем.</em></div>
+  </div>
+  <div class="grid g4">
+   <div class="card"><span class="mono acid">01</span><h3>Понятный процесс</h3><p>Этапы, сроки и результат известны заранее.</p></div>
+   <div class="card"><span class="mono acid">02</span><h3>Архитектура прежде кода</h3><p>Сначала продумываем систему, потом реализуем.</p></div>
+   <div class="card"><span class="mono acid">03</span><h3>Прозрачность</h3><p>Показываем прогресс и честно говорим о рисках.</p></div>
+   <div class="card"><span class="mono acid">04</span><h3>Поддержка после запуска</h3><p>Система живёт и после релиза — мы рядом.</p></div>
+  </div>
+ </div>
+</section>
+
+<section id="contact">
+ <div class="wrap rv">
+  <p class="label mono">06 / Контакт</p>
+  <h2>Обсудим проект?</h2>
+  <div class="contact">
+   <form id="form" novalidate>
+    <div class="f"><label class="mono" for="n">Имя</label><input id="n" required><small>Укажите имя</small></div>
+    <div class="f"><label class="mono" for="e">Email</label><input id="e" type="email" required><small>Укажите корректный email</small></div>
+    <div class="f"><label class="mono" for="m">Описание задачи</label><textarea id="m" required></textarea><small>Опишите задачу</small></div>
+    <button class="btn fill" type="submit">Отправить запрос</button>
+    <div id="ok">&gt; request received. Мы свяжемся с вами.</div>
+   </form>
+   <!-- TODO: заменить контакты на реальные -->
+   <div class="links">
+    <span class="mono">Email</span><a href="mailto:hello@zerion.dev">hello@zerion.dev</a>
+    <span class="mono" style="display:block;margin-top:24px">Telegram</span><a href="https://t.me/zerion_dev">@zerion_dev</a>
+   </div>
+  </div>
+ </div>
+</section>
+</main>
+
+<footer><div class="wrap foot">
+ <a href="#hero" class="logo"><svg viewBox="0 0 20 20" fill="none" stroke="#C5FF00" stroke-width="2.4"><path d="M3 3H17M17 3L3 17M3 17H17"/></svg>ZERION</a>
+ <span class="mono">Infrastructure // Development // Automation</span>
+ <span class="mono">© 2026 ZERION &nbsp;<a href="#hero" class="acid">↑ Наверх</a></span>
+</div></footer>
+
+<script>
+(function(){
+const rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+
+/* boot */
+(function(){
+ const b=$('#boot');let seen=false;try{seen=sessionStorage.getItem('zb')}catch(e){}
+ if(seen||rm){b.remove();return}
+ const lines=['INITIALIZING INTERFACE…','> loading modules','> connecting infrastructure','> status: operational'];
+ const t=$('#bootTxt');let i=0;
+ const done=()=>{b.classList.add('off');try{sessionStorage.setItem('zb','1')}catch(e){}setTimeout(()=>b.remove(),700)};
+ const iv=setInterval(()=>{if(i<lines.length){t.textContent+=lines[i++]+'\n'}else{clearInterval(iv);setTimeout(done,300)}},380);
+ b.addEventListener('click',()=>{clearInterval(iv);done()});
+})();
+
+/* glitch */
+const ti=$('.title');setTimeout(()=>ti.classList.add('glitch'),rm?99999:2000);
+setTimeout(()=>ti.classList.remove('glitch'),3000);
+
+/* nav */
+$('#burger').onclick=()=>$('#nav').classList.toggle('open');
+$$('#nav a').forEach(a=>a.addEventListener('click',()=>$('#nav').classList.remove('open')));
+const secs=['hero','directions','projects','lab','about','contact'].map(id=>document.getElementById(id));
+const links=$$('#nav a');
+new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+e.target.id))}}),{rootMargin:'-45% 0px -50% 0px'}).observe&&secs.forEach(s=>{
+ new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+s.id))}),{rootMargin:'-45% 0px -50% 0px'}).observe(s)});
+
+/* reveal */
+const ro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target)}}),{threshold:.08});
+$$('.rv').forEach(el=>ro.observe(el));
+
+/* clock */
+const ck=$('#clock');const tick=()=>ck.textContent='UTC '+new Date().toISOString().slice(11,19);tick();setInterval(tick,1000);
+
+/* cursor + card spotlight */
+$$('.card').forEach(c=>c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();c.style.setProperty('--mx',e.clientX-r.left+'px');c.style.setProperty('--my',e.clientY-r.top+'px')}));
+$$('.proj').forEach(p=>p.addEventListener('click',()=>{if(matchMedia('(hover:none)').matches)p.classList.toggle('open')}));
+
+/* canvas */
+const cv=$('#bg'),cx=cv.getContext('2d');let W,H,P=[],mouse={x:-999,y:-999};
+function rs(){const d=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0)}
+rs();addEventListener('resize',rs);
+addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+const N=innerWidth<700?35:70;
+for(let i=0;i<N;i++)P.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,a:Math.random()<.3});
+function draw(){
+ cx.clearRect(0,0,W,H);cx.strokeStyle='rgba(255,255,255,.035)';cx.lineWidth=1;cx.beginPath();
+ for(let x=0;x<W;x+=48){cx.moveTo(x+.5,0);cx.lineTo(x+.5,H)}
+ for(let y=0;y<H;y+=48){cx.moveTo(0,y+.5);cx.lineTo(W,y+.5)}cx.stroke();
+ for(const p of P){
+  const dx=p.x-mouse.x,dy=p.y-mouse.y,d=Math.hypot(dx,dy);
+  if(d<120){p.x+=dx/d*1.2;p.y+=dy/d*1.2}
+  p.x+=p.vx;p.y+=p.vy;
+  if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+  cx.fillStyle=p.a?'rgba(197,255,0,.8)':'rgba(160,166,168,.5)';cx.fillRect(p.x,p.y,2,2)}
+ for(let i=0;i<P.length;i++)for(let j=i+1;j<P.length;j++){
+  const d=Math.hypot(P[i].x-P[j].x,P[i].y-P[j].y);
+  if(d<110){cx.strokeStyle='rgba(197,255,0,'+(.12*(1-d/110))+')';cx.beginPath();cx.moveTo(P[i].x,P[i].y);cx.lineTo(P[j].x,P[j].y);cx.stroke()}}
+ if(!rm)requestAnimationFrame(draw)}
+draw();
+
+/* terminal */
+const out=$('#out'),cin=$('#cin');
+const C={
+ help:'Команды: services, software, infra, automation, ai, projects, about, contact, clear',
+ services:'Направления: Software Engineering, Digital Infrastructure, Process Automation, AI Solutions.\nПодробнее: software | infra | automation | ai',
+ software:'Software Engineering — разработка программных продуктов, сервисов и веб-платформ: backend, API, интерфейсы.',
+ infra:'Digital Infrastructure — серверные системы, деплой, CI/CD, интеграции между сервисами.',
+ automation:'Process Automation — автоматизация бизнес-процессов: сбор данных, документооборот, боты.',
+ ai:'AI Solutions — интеллектуальные инструменты: LLM-ассистенты, поиск по знаниям, интеграция AI в продукты.',
+ projects:'Проекты: платформа заявок, сервис сбора данных, автоматизация документооборота, AI-ассистент. Раздел 03.',
+ about:'ZERION — небольшая команда инженеров. Принципы: понятный процесс, архитектура прежде кода, прозрачность, поддержка.',
+ contact:'hello@zerion.dev | Telegram @zerion_dev | форма ниже на странице.'
+};
+const hist=[];let hi=0,busy=Promise.resolve();
+function line(t,c){const d=document.createElement('div');if(c)d.className=c;out.appendChild(d);
+ if(rm){d.textContent=t;out.scrollTop=out.scrollHeight;return Promise.resolve()}
+ return new Promise(r=>{let i=0;(function s(){d.textContent=t.slice(0,i+=3);out.scrollTop=out.scrollHeight;i<t.length?setTimeout(s,8):r()})()})}
+function run(v){v=v.trim().toLowerCase();if(!v)return;hist.push(v);hi=hist.length;
+ if(v==='clear'){out.textContent='';return}
+ const d=document.createElement('div');d.className='cmd';d.textContent='$ '+v;out.appendChild(d);
+ busy=busy.then(()=>C[v]?line(C[v]):line('command not found: '+v+' — введите help','err'))}
+cin.addEventListener('keydown',e=>{
+ if(e.key==='Enter'){run(cin.value);cin.value=''}
+ else if(e.key==='ArrowUp'&&hist.length){hi=Math.max(0,hi-1);cin.value=hist[hi]||'';e.preventDefault()}
+ else if(e.key==='ArrowDown'){hi=Math.min(hist.length,hi+1);cin.value=hist[hi]||'';e.preventDefault()}});
+['help','services','software','infra','automation','ai','projects','about','contact','clear'].forEach(c=>{
+ const b=document.createElement('button');b.className='chip';b.type='button';b.textContent=c;b.onclick=()=>run(c);$('#chips').appendChild(b)});
+line('ZERION terminal v1.0 — введите help или нажмите на команду ниже.');
+
+/* story scene + video-style reels */
+const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),ease=x=>x*x*(3-2*x);
+function fit(cv){const d=Math.min(devicePixelRatio||1,2),w=cv.clientWidth,h=cv.clientHeight;
+ if(cv.width!==Math.round(w*d)||cv.height!==Math.round(h*d)){cv.width=Math.round(w*d);cv.height=Math.round(h*d)}
+ const c=cv.getContext('2d');c.setTransform(d,0,0,d,0,0);return[c,w,h]}
+const items=[];
+function reg(cv,fn){const o={cv,fn,vis:false};items.push(o);new IntersectionObserver(e=>{o.vis=e[0].isIntersecting}).observe(cv)}
+
+/* story */
+const track=$('.track'),chaps=$$('.chap'),bars=$$('.prog i b'),scLab=$('#scLab');
+const LAB=['INPUT // RAW SIGNAL','ANALYSIS // MAPPING','ARCHITECTURE // MODULES','DEPLOY // OPERATIONAL'];
+const M=[['UI',.14,.3],['API',.4,.18],['AUTH',.66,.2],['DB',.86,.4],['QUEUE',.3,.55],['AI',.58,.52],['INFRA',.2,.82],['MONITOR',.7,.8]];
+const E=[[0,1],[1,2],[2,3],[1,4],[1,5],[4,5],[5,3],[4,6],[5,7],[6,7]];
+let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const chaos=M.map(()=>[rnd(),rnd()]);
+const noise=Array.from({length:48},()=>({x:rnd(),y:rnd(),vx:(rnd()-.5)*.00006,vy:(rnd()-.5)*.00006}));
+let cp=0,idx=-1;
+const progress=()=>{const r=track.getBoundingClientRect();return clamp(-r.top/(r.height-innerHeight))};
+reg($('#sc'),(c,w,h,t)=>{
+ const tp=progress();cp+=(tp-cp)*.12;const p=cp;
+ const i=Math.min(3,Math.floor(tp*4));
+ if(i!==idx){idx=i;chaps.forEach((el,j)=>el.classList.toggle('on',j===i));scLab.textContent=LAB[i]}
+ bars.forEach((b,j)=>b.style.transform='scaleX('+clamp(tp*4-j)+')');
+ c.clearRect(0,0,w,h);
+ const k=ease(clamp((p-.2)/.35)),edgeA=clamp((p-.5)/.15),la=clamp((p-.45)/.15),glow=clamp((p-.76)/.12),na=1-clamp((p-.2)/.4);
+ noise.forEach(n=>{const x=(((n.x+n.vx*t)%1)+1)%1,y=(((n.y+n.vy*t)%1)+1)%1;c.fillStyle='rgba(160,166,168,'+.6*na+')';c.fillRect(x*w,y*h,2,2)});
+ const pos=M.map((m,j)=>{const jx=Math.sin(t/700+j)*.015*(1-k),jy=Math.cos(t/800+j*2)*.015*(1-k);
+  return[(0.06+.88*(chaos[j][0]*(1-k)+m[1]*k+jx))*w,(0.14+.76*(chaos[j][1]*(1-k)+m[2]*k+jy))*h]});
+ c.lineWidth=1;
+ E.forEach((e,j)=>{const a=pos[e[0]],b=pos[e[1]];
+  c.strokeStyle='rgba(197,255,0,'+(.1*k+.45*edgeA)+')';c.beginPath();c.moveTo(a[0],a[1]);c.lineTo(b[0],b[1]);c.stroke();
+  if(edgeA>0){const u=((t/1800)+j*.37)%1;c.fillStyle='rgba(255,255,255,'+edgeA+')';c.fillRect(a[0]+(b[0]-a[0])*u-1.5,a[1]+(b[1]-a[1])*u-1.5,3,3)}});
+ c.font='11px JetBrains Mono, monospace';c.textAlign='center';c.textBaseline='middle';
+ pos.forEach((q,j)=>{
+  const fl=p<.2?.5+.5*Math.sin(t/200+j*3):1;
+  c.fillStyle='rgba(197,255,0,'+(.4+.6*k)*fl+')';c.beginPath();c.arc(q[0],q[1],2.5+k,0,7);c.fill();
+  if(la>0){const lw=c.measureText(M[j][0]).width+18;
+   c.globalAlpha=la;c.fillStyle=glow>0?'rgba(197,255,0,'+(.12*glow+.0)+')':'#0d1011';
+   c.fillRect(q[0]-lw/2,q[1]+10,lw,22);
+   c.strokeStyle=glow>0?'#C5FF00':'rgba(160,166,168,.6)';c.strokeRect(q[0]-lw/2+.5,q[1]+10.5,lw,22);
+   c.fillStyle=glow>0?'#C5FF00':'#d8dede';c.fillText(M[j][0],q[0],q[1]+21);c.globalAlpha=1}
+  if(glow>0){const u=((t/1200)+j*.13)%1;c.strokeStyle='rgba(197,255,0,'+(1-u)*.5*glow+')';c.beginPath();c.arc(q[0],q[1],u*40,0,7);c.stroke()}})});
+
+/* reels */
+const R={};
+R.rain=()=>{let cols=[],lw=0;const ch='01ZERION{}<>/;=#',fs=16;
+ const step=(c,w,h,dt)=>{const n=cols.length;c.fillStyle='rgba(5,6,7,.12)';c.fillRect(0,0,w,h);c.font=fs+'px JetBrains Mono, monospace';
+  for(let i=0;i<n;i++){const y=cols[i]*fs;c.fillStyle=Math.random()<.04?'#fff':'#C5FF00';c.globalAlpha=.85;
+   c.fillText(ch[Math.random()*ch.length|0],i*fs,y);c.globalAlpha=1;
+   cols[i]+=(.25+(i*7%5)*.08)*dt/16.7;if(y>h&&Math.random()>.975)cols[i]=0}};
+ return(c,w,h,t,dt)=>{
+  if(lw!==w){lw=w;cols=Array.from({length:Math.ceil(w/fs)},()=>Math.random()*h/fs);c.fillStyle='#050607';c.fillRect(0,0,w,h);
+   if(rm)for(let i=0;i<200;i++)step(c,w,h,16.7)}
+  if(!rm)step(c,w,h,dt)}};
+R.wire=()=>(c,w,h,t)=>{
+ c.fillStyle='#050607';c.fillRect(0,0,w,h);
+ const cx0=w*.7,cy0=h*.5,r=Math.min(w*.25,h*.4),a=t/4000+.6,b=t/7000+.3;
+ const P=(x,y,z)=>{const X=x*Math.cos(a)+z*Math.sin(a);let Z=-x*Math.sin(a)+z*Math.cos(a);
+  const Y=y*Math.cos(b)-Z*Math.sin(b);Z=y*Math.sin(b)+Z*Math.cos(b);const f=3/(3+Z);return[cx0+X*r*f,cy0+Y*r*f]};
+ c.lineWidth=1;c.strokeStyle='rgba(197,255,0,.35)';
+ for(let i=0;i<8;i++){const la=-Math.PI/2+Math.PI*(i+.5)/8;c.beginPath();
+  for(let k=0;k<=48;k++){const lo=2*Math.PI*k/48,q=P(Math.cos(la)*Math.cos(lo),Math.sin(la),Math.cos(la)*Math.sin(lo));k?c.lineTo(q[0],q[1]):c.moveTo(q[0],q[1])}c.stroke()}
+ for(let i=0;i<12;i++){const lo=Math.PI*i/12;c.beginPath();
+  for(let k=0;k<=48;k++){const la=2*Math.PI*k/48,q=P(Math.cos(la)*Math.cos(lo),Math.sin(la),Math.cos(la)*Math.sin(lo));k?c.lineTo(q[0],q[1]):c.moveTo(q[0],q[1])}c.stroke()}
+ const V=[];for(let i=0;i<8;i++)V.push(P((i&1?1:-1)*.55,(i&2?1:-1)*.55,(i&4?1:-1)*.55));
+ c.strokeStyle='rgba(255,255,255,.75)';c.beginPath();
+ for(let i=0;i<8;i++)for(let j=i+1;j<8;j++){const d=i^j;if(d===1||d===2||d===4){c.moveTo(V[i][0],V[i][1]);c.lineTo(V[j][0],V[j][1])}}c.stroke();
+ c.fillStyle='#C5FF00';V.forEach(v=>c.fillRect(v[0]-2,v[1]-2,4,4))};
+R.scope=()=>{const bl=Array.from({length:9},(_,i)=>({a:(i*2.399)%(2*Math.PI),d:.2+((i*37)%10)/14}));
+ return(c,w,h,t)=>{
+  c.fillStyle='#050607';c.fillRect(0,0,w,h);
+  const cx0=w*.7,cy0=h*.52,r=Math.min(w*.26,h*.42),TP=2*Math.PI;
+  c.strokeStyle='rgba(197,255,0,.25)';c.lineWidth=1;
+  for(let i=1;i<=4;i++){c.beginPath();c.arc(cx0,cy0,r*i/4,0,TP);c.stroke()}
+  c.beginPath();c.moveTo(cx0-r,cy0);c.lineTo(cx0+r,cy0);c.moveTo(cx0,cy0-r);c.lineTo(cx0,cy0+r);c.stroke();
+  const ang=(t/2500)%TP;
+  for(let i=0;i<40;i++){c.beginPath();c.moveTo(cx0,cy0);c.arc(cx0,cy0,r,ang-i*.03-.03,ang-i*.03);c.closePath();c.fillStyle='rgba(197,255,0,'+.22*(1-i/40)+')';c.fill()}
+  c.strokeStyle='#C5FF00';c.beginPath();c.moveTo(cx0,cy0);c.lineTo(cx0+Math.cos(ang)*r,cy0+Math.sin(ang)*r);c.stroke();
+  for(const b of bl){let d=(ang-b.a)%TP;if(d<0)d+=TP;const al=t?Math.max(0,1-d/4):.7;
+   c.fillStyle='rgba(197,255,0,'+al+')';c.fillRect(cx0+Math.cos(b.a)*r*b.d-3,cy0+Math.sin(b.a)*r*b.d-3,6,6)}}};
+$$('.reel').forEach(r=>{
+ const cv=r.querySelector('canvas'),tc=r.querySelector('.tc'),fn=R[r.dataset.mode]();
+ reg(cv,(c,w,h,t,dt)=>{fn(c,w,h,t,dt);const s=t/1000,f=Math.floor((s%1)*24);
+  tc.textContent=[s/3600,s/60%60,s%60].map(v=>String(Math.floor(v)).padStart(2,'0')).join(':')+':'+String(f).padStart(2,'0')});
+ /* реальное видео: положите файл по пути из data-video — оно заменит анимацию */
+ if(r.dataset.video){const v=document.createElement('video');v.muted=true;v.loop=true;v.playsInline=true;v.autoplay=!rm;v.preload='metadata';
+  v.addEventListener('loadeddata',()=>{cv.style.display='none';r.prepend(v);
+   const tick=()=>{const s=v.currentTime;tc.textContent=[s/3600,s/60%60,s%60].map(x=>String(Math.floor(x)).padStart(2,'0')).join(':')+':'+String(Math.floor((s%1)*24)).padStart(2,'0');if(!v.paused)requestAnimationFrame(tick)};
+   v.addEventListener('play',tick);
+   new IntersectionObserver(e=>{if(rm)return;e[0].isIntersecting?v.play().catch(()=>{}):v.pause()}).observe(r);
+   if(!rm)v.play().catch(()=>{});else tick()});v.src=r.dataset.video}});
+let last=performance.now();
+(function loop(now){const dt=Math.min(50,now-last);last=now;const t=rm?0:now;
+ for(const o of items)if(o.vis){const[c,w,h]=fit(o.cv);o.fn(c,w,h,t,dt)}
+ requestAnimationFrame(loop)})(last);
+
+/* form */
+$('#form').addEventListener('submit',e=>{e.preventDefault();let ok=true;
+ [['n',v=>v.trim()],['e',v=>/^\S+@\S+\.\S+$/.test(v)],['m',v=>v.trim()]].forEach(([id,f])=>{
+  const el=document.getElementById(id),g=el.closest('.f');const good=f(el.value);g.classList.toggle('bad',!good);if(!good)ok=false});
+ if(!ok)return;
+ // TODO: отправить данные на backend-эндпоинт. Сейчас ничего не отправляется.
+ $('#ok').style.display='block';e.target.reset()});
+})();
+</script>
+</body>
+</html>
